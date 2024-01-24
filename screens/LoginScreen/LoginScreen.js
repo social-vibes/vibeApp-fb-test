@@ -1,16 +1,31 @@
 import React, { useState } from 'react'
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import styles from './styles';
+import { auth } from '../../firebase/firebaseConfig'; 
+import { signInWithEmailAndPassword } from "firebase/auth"; 
 
 export default function LoginScreen({navigation}) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const onFooterLinkPress = () => {
-        navigation.navigate('Registration')
+    //-- Sign in with email/password TODO: move to authprovider
+    const onLoginPress = () => {
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log("USER SIGN IN:", user.email);
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.warn(errorCode, errorMessage);
+        });
     }
 
-    const onLoginPress = () => {
+    //-- Navigate to registration page
+    const onFooterLinkPress = () => {
+        navigation.navigate('RegisterScreen')
     }
 
     return (

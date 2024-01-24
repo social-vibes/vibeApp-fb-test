@@ -12,6 +12,7 @@ Documentation:
   - https://firebase.google.com/docs/auth
   - https://firebase.google.com/docs/firestore/quickstart
   - https://reactnavigation.org/docs/getting-started
+  - https://react-native-async-storage.github.io/async-storage/docs/install/ 
 
 
 

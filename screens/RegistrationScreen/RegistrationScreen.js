@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import styles from './styles';
-// Firebase Password Auth
-import { auth, db } from '../../firebase/firebaseConfig'; //reference to my apps auth service 
+import { auth, db } from '../../firebase/firebaseConfig'; 
 import { createUserWithEmailAndPassword } from "firebase/auth"; 
-// Firebase Firestore
 import { collection, addDoc } from "firebase/firestore"; 
 
 
@@ -13,31 +11,36 @@ export default function RegistrationScreen({navigation}) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-
-    const onFooterLinkPress = () => {
-        navigation.navigate('Login')
-    }
+    
 
     //-- Initiate REGISTRATION
-    const onRegisterPress = () => {
+    const onRegisterPress = async () => {
+    //TODO: more password validation
     if (password !== confirmPassword) {
         alert("Passwords don't match.")
         return
-    }
-      //Create a password-based account
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        const user = userCredential.user;
-        console.log("New user registered:", user.uid);
-        addUserToDb(user.uid)
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        print(errorCode, errorMessage);
-    });
+    } 
+    await registerUser(email, password)
     }
 
+
+    //-- REGISTER NEW USER with Email/Pass.
+    const registerUser = async (email, password) =>{
+        createUserWithEmailAndPassword(auth, email, password) //Create a password-based account
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log("New user registered:", user.uid);
+            addUserToDb(user.uid) //add new user to users collection
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            print(errorCode, errorMessage);
+        });
+    }
+
+
+    //-- SAVE NEW USER in Firestore "users" collection
     async function addUserToDb(id) {
     try {
     const docRef = await addDoc(collection(db, "users"), {
@@ -49,6 +52,11 @@ export default function RegistrationScreen({navigation}) {
     } catch (e) {
     console.error("Error adding document: ", e);
     }
+    }
+
+
+    const onFooterLinkPress = () => {
+        navigation.navigate('LoginScreen')
     }
 
     return (

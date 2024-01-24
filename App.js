@@ -1,29 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { LoginScreen, HomeScreen, RegistrationScreen } from './screens'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthProvider, useAuth } from './providers/authProvider';
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
+  return(
+    <NavigationContainer>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </NavigationContainer>
+  );
+}
+
+//Conditional app entry point 
+function AppContent() {
+  const { userInfo } = useAuth();
 
   return (
-    <NavigationContainer>
       <Stack.Navigator>
-        { user ? (
-          <Stack.Screen name="Home">
-            {props => <HomeScreen {...props} extraData={user} />}
-          </Stack.Screen>
+        { userInfo ? (
+          <Stack.Screen name="Home" component={HomeScreen}/> 
         ) : (
           <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Registration" component={RegistrationScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegistrationScreen} />
           </>
         )}
       </Stack.Navigator>
-    </NavigationContainer>
   );
 }
