@@ -3,9 +3,10 @@ This repository contains the testing code for implementing various Firebase serv
   - Firebase FireStore DB
 
 Notes:
+  - *This repo uses the Firebase JS SDK*
   - *This repo does not contain third party authentication services such as Google or Facebook*
   - *This repo is linked to the **vibeApp-fb-test** project in Firebase*
-  - *This repo uses the Firebase JS SDK*
+  - *If you cloned this repo and plan to use it for another project, make sure your replace the Firebase config object with that of your new project!*
 
 Documentation:
   - https://docs.expo.dev/guides/using-firebase/#using-firebase-js-sdk
