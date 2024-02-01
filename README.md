@@ -1,11 +1,11 @@
-Custom Map with popup bottom sheet
+Custom Map with popup bottom sheet <br />
 when a marker is clicked.
 
 
 To run this:
 
 Clone The Repo  <br />
-Switch Branches "git checkout maps"
-Open in VsCode "code ."
-Install the Libraries "Npm Install"
-Run the App "npm run start"
+Switch Branches "git checkout maps"  <br />
+Open in VsCode "code ."  <br />
+Install the Libraries "Npm Install"  <br />
+Run the App "npm run start"  <br />
