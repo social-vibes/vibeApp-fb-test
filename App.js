@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   markerBox: {
     position: 'absolute',
     height: "10%",
-    bottom: '89%', // Adjust this value to set the desired distance from the bottom
+    bottom: '0%', // Adjust this value to set the desired distance from the bottom
     left: 0,
     right: 0,
     backgroundColor: 'white',
