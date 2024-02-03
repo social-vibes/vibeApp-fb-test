@@ -2,7 +2,7 @@ import React from 'react'
 import { Text, View, SafeAreaView, Pressable } from 'react-native'
 
 
-export default function MessagesScreen(){
+export default function FriendsScreen(){
 
   return(
     <View>

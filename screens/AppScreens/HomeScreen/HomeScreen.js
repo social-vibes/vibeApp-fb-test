@@ -41,7 +41,6 @@ export default function HomeScreen() {
                     signOut(auth)
                     .then(() => {
                         signOutUser();
-                        // setUserInfo(null)
                     })
                     .catch((error) => {console.log("Error signing out", error)});                
                 }}

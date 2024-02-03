@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HomeScreen  from './HomeScreen/HomeScreen';
-import MessagesScreen from './ChatsScreen/MessagesScreen';
+import FriendsScreen from './FriendsScreen/FriendsScreen';
 import NotificationScreen from './NotificationsScreen/NotificationScreen';
 
 
@@ -18,11 +18,9 @@ export default function TabNav() {
                 tabBarIcon: ({ focused, color, size }) => {
                   let iconName;
                   if (route.name === 'Home') {
-                    iconName = focused
-                      ? 'map'
-                      : 'map-o';
-                  } else if (route.name === 'Chat') {
-                    iconName = focused ? 'wechat' : 'wechat';
+                    iconName = focused ? 'map' : 'map-o';
+                  } else if (route.name === 'Friends') {
+                    iconName = focused ? 'user' : 'user';
                   } else if (route.name === 'Notifications'){
                     iconName = focused ? 'bell' : 'bell-o';
                   }
@@ -33,7 +31,7 @@ export default function TabNav() {
               })}
             >
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Chat" component={MessagesScreen} />
+        <Tab.Screen name="Friends" component={FriendsScreen} />
         <Tab.Screen name="Notifications" component={NotificationScreen} />
       </Tab.Navigator>
   );
