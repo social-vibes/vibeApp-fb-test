@@ -15,13 +15,13 @@ function AuthProvider({ children }) {
   }, [])
 
 
-  //-- Llisten for sign-in/sign-out. Set authenticated user in Async if user is successfully authenticated
+  //-- Listen for sign-in/sign-out. Set authenticated user in Async if user is successfully authenticated
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUserInfo(user); //update state var
         await AsyncStorage.setItem('@userKey', JSON.stringify(user)); //Set userKey in local storage
-        console.log("user set in storage");
+        console.log("Auth Provider -- user set in storage", user.email);
       } else {
         console.log('not authenticated');
       }

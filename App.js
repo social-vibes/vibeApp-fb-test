@@ -1,5 +1,5 @@
 import React from 'react'
-import { LoginScreen, HomeScreen, RegistrationScreen } from './screens'
+import { LoginScreen, RegistrationScreen, TabNav } from './screens'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, useAuth } from './providers/authProvider';
@@ -25,7 +25,7 @@ function AppContent() {
   return (
       <Stack.Navigator>
         { userInfo ? (
-          <Stack.Screen name="Home" component={HomeScreen}/> 
+          <Stack.Screen name="AppScreens" component={TabNav}/> 
         ) : (
           <>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />

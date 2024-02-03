@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import styles from './styles';
-import { auth, db } from '../../firebase/firebaseConfig'; 
+import { auth, db } from '../../../firebase/firebaseConfig'; 
 import { createUserWithEmailAndPassword } from "firebase/auth"; 
-import { collection, addDoc } from "firebase/firestore"; 
-
+// import { collection, addDoc } from "firebase/firestore";  //--USING ADD DOC (create doc + autogenerate doc id)
+import { collection, doc, setDoc } from "firebase/firestore";  //-- USING SET DOC (create doc + I specify doc id - which I will set as the auth uid)
 
 export default function RegistrationScreen({navigation}) {
     const [fullName, setFullName] = useState('')
@@ -29,29 +29,30 @@ export default function RegistrationScreen({navigation}) {
         createUserWithEmailAndPassword(auth, email, password) //Create a password-based account
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log("New user registered:", user.uid);
+            console.log("1-- New user authenticated. ID:", user.uid);
             addUserToDb(user.uid) //add new user to users collection
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            print(errorCode, errorMessage);
+            console.log("Registration Error: ",errorCode, errorMessage);
         });
     }
+
 
 
     //-- SAVE NEW USER in Firestore "users" collection
-    async function addUserToDb(id) {
-    try {
-    const docRef = await addDoc(collection(db, "users"), {
-        email: email,
-        name: fullName,
-        id: id
-        });
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-    console.error("Error adding document: ", e);
-    }
+    async function addUserToDb(authId) {
+        try {
+        const docRef = await setDoc(doc(db, "users", authId), {
+            name: fullName,
+            email: email,
+            docId: authId, 
+            });
+        console.log("2-- New user Document created. DocId:", authId);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
     }
 
 
@@ -64,7 +65,7 @@ export default function RegistrationScreen({navigation}) {
             <View style={{ flex: 1, width: '100%' }}>
                 <Image
                     style={styles.logo}
-                    source={require('../../assets/icon.png')}
+                    source={require('../../../assets/icon.png')}
                 />
                 <TextInput
                     style={styles.input}
@@ -93,6 +94,7 @@ export default function RegistrationScreen({navigation}) {
                     value={password}
                     underlineColorAndroid="transparent"
                     autoCapitalize="none"
+                    textContentType={'oneTimeCode'}
                 />
                 <TextInput
                     style={styles.input}
@@ -103,6 +105,7 @@ export default function RegistrationScreen({navigation}) {
                     value={confirmPassword}
                     underlineColorAndroid="transparent"
                     autoCapitalize="none"
+                    textContentType={'oneTimeCode'}
                 />
                 <TouchableOpacity
                     style={styles.button}

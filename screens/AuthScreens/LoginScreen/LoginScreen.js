@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import styles from './styles';
-import { auth } from '../../firebase/firebaseConfig'; 
+import { auth } from '../../../firebase/firebaseConfig'; 
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 
 export default function LoginScreen({navigation}) {
@@ -14,7 +14,7 @@ export default function LoginScreen({navigation}) {
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            console.log("USER SIGN IN:", user.email);
+            console.log("USER SIGN IN:", user);
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -33,7 +33,7 @@ export default function LoginScreen({navigation}) {
             <View style={{ flex: 1, width: '100%' }}>
                 <Image
                     style={styles.logo}
-                    source={require('../../assets/icon.png')}
+                    source={require('../../../assets/icon.png')}
                 />
                 <TextInput
                     style={styles.input}
