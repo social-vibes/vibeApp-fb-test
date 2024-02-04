@@ -22,6 +22,7 @@ export default function App() {
 function AppContent() {
   const { userInfo } = useAuth();
 
+    
   return (
       <Stack.Navigator>
         { userInfo ? (
