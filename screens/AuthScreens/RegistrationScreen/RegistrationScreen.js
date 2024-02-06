@@ -45,7 +45,7 @@ export default function RegistrationScreen({navigation}) {
     async function addUserToDb(authId) {
         try {
         const docRef = await setDoc(doc(db, "users", authId), {
-            name: fullName,
+            name: fullName.toLowerCase(), //because firebase is case sensitive;
             email: email,
             docId: authId, 
             });

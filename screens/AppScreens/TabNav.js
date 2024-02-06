@@ -34,7 +34,7 @@ export default function TabNav() {
       }
     );
     return () => {
-      unsubscribe(); // Cleanup the listener
+      unsubscribe();
     };
   }, []);
 
@@ -59,7 +59,7 @@ export default function TabNav() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Friends" component={FriendsScreen} />
       <Tab.Screen name="Notifications" 
-        children={() => <NotificationScreen friendshipNotifications={friendshipNotifications} />}
+        children={() => <NotificationScreen friendshipNotifications={friendshipNotifications} setFriendshipNotifications={setFriendshipNotifications} />}
         options={{ tabBarBadge: friendshipNotifications.length > 0 ? friendshipNotifications.length : null }}
       />
     </Tab.Navigator>
