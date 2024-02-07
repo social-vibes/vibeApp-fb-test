@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { onSnapshot, query, collection, where, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import FriendsScreen from './FriendsScreen/FriendsScreen';
+import ChatScreen from './ChatScreen/ChatScreen';
 import HomeScreen from './HomeScreen/HomeScreen';
 import NotificationScreen from './NotificationsScreen/NotificationScreen';
 
@@ -16,6 +17,7 @@ const Tab = createBottomTabNavigator();
 export default function TabNav() {
   const { userInfo } = useAuth();
   const [friendshipNotifications, setFriendshipNotifications] = useState([]); //-- Holds notifications
+  // const [chatNotifications, setChatNotifications] = useState([]);
 
   useEffect(() => {
     //-- Listen for updates in friendships collection
@@ -47,9 +49,11 @@ export default function TabNav() {
             iconName = focused ? 'map' : 'map-o';
           } else if (route.name === 'Friends') {
             iconName = focused ? 'user' : 'user';
-          } else if (route.name === 'Notifications') {
+          }else if (route.name === 'Chats'){
+            iconName = focused ? 'comments' : 'comments-o';
+          }else if (route.name === 'Notifications') {
             iconName = focused ? 'bell' : 'bell-o';
-          }
+          } 
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: 'tomato',
@@ -58,6 +62,7 @@ export default function TabNav() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Friends" component={FriendsScreen} />
+      <Tab.Screen name="Chats" component={ChatScreen} />
       <Tab.Screen name="Notifications" 
         children={() => <NotificationScreen friendshipNotifications={friendshipNotifications} setFriendshipNotifications={setFriendshipNotifications} />}
         options={{ tabBarBadge: friendshipNotifications.length > 0 ? friendshipNotifications.length : null }}

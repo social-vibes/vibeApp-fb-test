@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View, SafeAreaView, Pressable, SectionList, StyleSheet } from 'react-native'
-import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, setDoc, serverTimestamp} from "firebase/firestore";
 import { db } from '../../../firebase/firebaseConfig';
 
   /*TODO: 
@@ -55,9 +55,31 @@ export default function NotificationScreen({ friendshipNotifications, setFriends
       try{
         //updating a doc: https://firebase.google.com/docs/firestore/manage-data/add-data#update-data
         const friendshipDocRef = doc(db, "friendships", notificationToHandle[0].id); //reference to the friendship doc to update
-        await updateDoc(friendshipDocRef, {
-          status: response
-        });
+       // add an if statement to generate a chatId if request is accepted
+        if (response === "ACCEPTED") {
+          const chatsRef = collection(db, "chats");
+          const newChatRef = doc(chatsRef);
+    
+          await setDoc(newChatRef, {
+            members: [notificationToHandle[0].data.requestorId, notificationToHandle[0].data.requesteeId],
+            messages: [],
+            lastUpdated: serverTimestamp(),
+          });
+    
+          // Retrieve the auto-generated chat ID
+          const chatId = newChatRef.id;
+    
+          // Update the friendship document with the new chat ID
+          await updateDoc(friendshipDocRef, {
+            status: response,
+            chatId: chatId, // Link the chatId to the friendship
+          });
+        } else {
+          // If not accepted, just update the status
+          await updateDoc(friendshipDocRef, {
+            status: response,
+          });
+        }
         setFriendshipNotifications((prevNotif) => {
           const updatedNotifications = [...prevNotif];
           updatedNotifications.splice(updatedNotifications.indexOf(notificationToHandle[0]), 1);  //remove the notif. from notification array
