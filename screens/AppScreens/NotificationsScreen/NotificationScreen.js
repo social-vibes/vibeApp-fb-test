@@ -14,121 +14,58 @@ import { db } from '../../../firebase/firebaseConfig';
 
 
 export default function NotificationScreen({ friendshipNotifications, setFriendshipNotifications}){
-  //--Array to store notifications. 
-  const [notifications, setNotifications] = useState([]);
 
-  useEffect(()=>{
-    friendshipNotifications.length > 0 ? getRequestorNames() : null; //-- only query if there are new follow requests.
-  },[friendshipNotifications])
-
-    
-  //-- If friendshipNotifications.length > 0, retrieve user document(s) of friend REQUESTORS.
-  const getRequestorNames = async () => {
-    try {
-      let requestorIds = [];
-      friendshipNotifications.forEach((req) => requestorIds.push(req.data.requestorId));
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("docId", "in", requestorIds));
-      const querySnapshot = await getDocs(q);
-      setNotifications(() => {
-        const newNotifications = [];
-        querySnapshot.forEach((doc) => {
-          newNotifications.push({
-            type: "followReq", // Notification type (follow request vs new message)
-            notificationDoc: doc.data(), // Will hold the document with the notification
-          });
-        });
-        return newNotifications;
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-
-    //-- Respond to a friend Request (APPROVE OR REJECT)
-      //friendshipNotifications is the array of all current notifications
-      //requestor is the requestor's user doc
-      //response is the requestee's response
-    const handleFollowRequest = async (friendshipNotifications, requestorId, response) =>{
-      const notificationToHandle = friendshipNotifications.filter((notif) => notif.data.requestorId === requestorId); //filter through the array of notifications and retrieve the one being handled atm      
-      try{
-        //updating a doc: https://firebase.google.com/docs/firestore/manage-data/add-data#update-data
-        const friendshipDocRef = doc(db, "friendships", notificationToHandle[0].id); //reference to the friendship doc to update
-       // add an if statement to generate a chatId if request is accepted
-        if (response === "ACCEPTED") {
-          const chatsRef = collection(db, "chats");
-          const newChatRef = doc(chatsRef);
-    
-          await setDoc(newChatRef, {
-            members: [notificationToHandle[0].data.requestorId, notificationToHandle[0].data.requesteeId],
-            messages: [],
-            lastUpdated: serverTimestamp(),
-          });
-    
-          // Retrieve the auto-generated chat ID
-          const chatId = newChatRef.id;
-    
-          // Update the friendship document with the new chat ID
+    //-- Respond to a friend Request (APPROVE OR REJECT) -- friendshipNotifications is the array of all current notifications
+      const handleFollowRequest = async (friendshipNotifications, requestorId, response) =>{
+        const notificationToHandle = friendshipNotifications.find((notif) => notif.data.requestorId === requestorId); //find the notification currently being accepted/rejected
+        try{
+          //updating a doc: https://firebase.google.com/docs/firestore/manage-data/add-data#update-data
+          const friendshipDocRef = doc(db, "friendships", notificationToHandle.id); //reference to the friendship doc to update
+          console.log('Notifications Page -- updating a doc')
           await updateDoc(friendshipDocRef, {
-            status: response,
-            chatId: chatId, // Link the chatId to the friendship
+            status: response
           });
-        } else {
-          // If not accepted, just update the status
-          await updateDoc(friendshipDocRef, {
-            status: response,
-          });
+          const updatedNotifications = friendshipNotifications.filter((notif) => notif.data.requestorId !== requestorId); //remove the notification that was just handled by user
+          setFriendshipNotifications(updatedNotifications) //update state var
+        } catch(e){
+          console.error(e);
         }
-        setFriendshipNotifications((prevNotif) => {
-          const updatedNotifications = [...prevNotif];
-          updatedNotifications.splice(updatedNotifications.indexOf(notificationToHandle[0]), 1);  //remove the notif. from notification array
-          return updatedNotifications;
-        });
-        console.log("friendships document updated in firebase, and removed from friendshipNotifications arr");
-      } catch(e){
-        console.error(e);
+        //TODO: We will need to manage all things firebase through context in the actual app.
       }
-      //TODO: We will need to manage all things firebase through context in the actual app.
-    }
-
+  
 
 
     //-- Build the appropriate notification lists in a sectionList (follow requests vs chats);
     const buildNotificationList = () => {
-      const followNotifications = [];
-      const chatNotifications = [];
-      notifications.forEach((notif)=>{
-        notif.type === "followReq" ? followNotifications.push(notif.notificationDoc) : chatNotifications.push(notif.notificationDoc);
-      })
+      const chatNotifications = []; //will be replaced by state var in tabNav.js;
       return (
         <View>
           <SectionList sections={[
-              { title: 'Follow Requests', data: followNotifications },
-              { title: 'New Messages', data: chatNotifications },
+              { title: 'Follow Requests', data: friendshipNotifications },
+              { title: 'New Messages', data: chatNotifications }, 
             ]}
-            renderItem={({ item }) => data = followNotifications ? followReqListItem(item) : null}
+            renderItem={({ item }) => friendshipNotifications ? followReqListItem(item) : null}
             renderSectionHeader={({ section }) => (
               <Text style={{ padding: 10, fontSize: 14, fontWeight: 'bold', backgroundColor: 'rgba(247,247,247,1.0)' }}>
                 {section.title}
               </Text>            )}
-            keyExtractor={item => item.docId}
-          />
+            keyExtractor={item => item.data.requestorId}
+        />
         </View>
       );
     }
 
     //-- List Item for Follow request notifications
-    const followReqListItem = (item) => {      
+    const followReqListItem = (item) => {  
       return(
         <Pressable onPress={() => console.log('SHOW USER PROFILE MODAL')}>
           <View style={styles.liContainer}>
-            <Text>{item.name} has requested to follow you.</Text>
+            <Text>{item.data.requestorName} has requested to follow you.</Text>
             <View>
-              <Pressable onPress={() => handleFollowRequest(friendshipNotifications, item.docId, "ACCEPTED")}> 
+              <Pressable onPress={() => handleFollowRequest(friendshipNotifications, item.data.requestorId, "ACCEPTED")}> 
                 <Text>Accept</Text> 
               </Pressable>
-              <Pressable onPress={() => handleFollowRequest(friendshipNotifications, item.docId, "REJECTED")}> 
+              <Pressable onPress={() => handleFollowRequest(friendshipNotifications, item.data.requestorId, "REJECTED")}> 
                 <Text>Reject</Text> 
               </Pressable>
             </View>
@@ -140,7 +77,7 @@ export default function NotificationScreen({ friendshipNotifications, setFriends
 
   return (
     <View>
-      {notifications.length > 0 && buildNotificationList()}
+      {friendshipNotifications.length > 0 ? buildNotificationList() : null}
     </View>
   );
 }

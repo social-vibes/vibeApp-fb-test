@@ -4,46 +4,20 @@ import { useAuth } from '../../../providers/authProvider';
 import { db } from '../../../firebase/firebaseConfig';
 import { doc, getDoc, onSnapshot, query, where, collection } from "firebase/firestore";
 
-export default function ChatScreen() {
-  const { userInfo } = useAuth(); 
-  const [friendsList, setFriendsList] = useState([]);
+/* It is only possible to get on this page if both users are friends; TODO:
+  - Create the chat document; and ensure that a unique chat document exists between the 2 users.
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, 'friendships'),
-        where('members', 'array-contains', userInfo.uid),
-        where('status', '==', 'ACCEPTED')
-      ),
-      (querySnapshot) => {
-        querySnapshot.docChanges().forEach(async (change) => {
-          if ((change.type === 'added' || change.type === 'modified') && !change.doc.metadata.hasPendingWrites) {
-            const friendshipData = change.doc.data();
-            const friendId = friendshipData.requestorId === userInfo.uid ? friendshipData.requesteeId : friendshipData.requestorId;
-            const friendDoc = await getDoc(doc(db, 'users', friendId));
+*/
 
-            if (friendDoc.exists()) {
-              setFriendsList((prevFriendsList) => [...prevFriendsList, friendDoc.data().name]);
-            }
-          }
-        });
-      }
-    );
-
-    return () => unsubscribe();
-  }, [userInfo.uid]);
+export default function ChatScreen({route}) {
+  const { userId, friendshipDoc } = route.params; //passed the current user's ID and the friend's Doc through route params from FriendScreen 
+  const friendName = userId === friendshipDoc.data.requesteeId ? friendshipDoc.data.requestorName : friendshipDoc.data.requesteeName; //name of the friend
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {friendsList.length > 0 ? (
-        friendsList.map((name, index) => (
-          <View key={index} style={{ padding: 10 }}>
-            <Text style={{ fontSize: 20 }}>{name}</Text>
+          <View style={{ padding: 10 }}>
+            <Text style={{ fontSize: 20 }}>{friendName}</Text>
           </View>
-        ))
-      ) : (
-        <Text>No friends added yet.</Text>
-      )}
     </SafeAreaView>
   );
 }
