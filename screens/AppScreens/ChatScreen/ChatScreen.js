@@ -6,7 +6,7 @@ import { doc, getDoc, onSnapshot, query, where, collection } from "firebase/fire
 
 /* It is only possible to get on this page if both users are friends; TODO:
   - Create the chat document; and ensure that a unique chat document exists between the 2 users.
-
+  - Create chat collection; 
 */
 
 export default function ChatScreen({route}) {
