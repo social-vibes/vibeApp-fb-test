@@ -102,34 +102,12 @@ export default function FriendsScreen(){
           id: doc.id, //id of the friendship document in firebase
           data: doc.data() //the friendship document itself
         }));
-        // Extract friendIds 
-        // const friendIds = friends.map((friend) => friend.data.requestorId === userDoc.docId ? friend.data.requesteeId : friend.data.requestorId);
-        // getFriendsDocs(friendIds)
-        console.log(friends);
         setFriendsList(friends)
       } catch (error) {
         console.error("Error fetching friends:", error);
       }
     };
 
-    //-- Get the user's friends documents from the friends array, and set the friendsList state with all the user's friends' documents
-    // const getFriendsDocs = async (friendIds) => {
-    //   if(friendIds.length > 0){
-    //     try {
-    //       console.log('Friends Page -- querying for a doc 3')
-    //       const userDocsQuery = query(collection(db, 'users'),
-    //         where('docId', 'in', friendIds)
-    //       );
-    //       const userDocsSnapshot = await getDocs(userDocsQuery);
-    //       const friendDocs = userDocsSnapshot.docs.map((doc) => ({
-    //         data: doc.data()
-    //       }));
-    //       setFriendsList(friendDocs);
-    //     } catch (error) {
-    //       console.error("Error fetching user documents:", error);
-    //     }
-    //   }
-    // };
 
     //-- Map through the friendsList state array (holding all of the user's friend documents)
     const buildFriendsList = () => {
