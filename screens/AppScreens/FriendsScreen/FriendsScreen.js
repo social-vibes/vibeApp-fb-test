@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react'
 import { Text, View, SafeAreaView, Pressable, TextInput, FlatList, StyleSheet,  } from 'react-native'
+import * as Crypto from 'expo-crypto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useAuth } from '../../../providers/authProvider';
 import { db } from '../../../firebase/firebaseConfig';
@@ -62,7 +63,7 @@ export default function FriendsScreen(){
           requesteeName: user.name,
           status: 'PENDING',          //-- PENDING || ACCEPTED || REJECTED
           members: [userDoc.docId, user.docId], //-- both members are put in an array. Makes for easier querying when retrieving friends list.
-          chatId: null,               //-- Reference to chat document between the two
+          chatId: Crypto.randomUUID(),               //-- Reference to chat document between the two
         });
       } catch (e) {
         console.error("Error adding document: ", e);

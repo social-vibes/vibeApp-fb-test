@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 
-// Firebase configuration
+// Firebase configuration TODO: Add to .ENV vars
 const firebaseConfig = {
   apiKey: "AIzaSyBlIKZAjYW3HEICh8rQqRP-TgrTTWxXFOo",
   authDomain: "vibeapp-fb-test.firebaseapp.com",
