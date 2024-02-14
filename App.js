@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+ import React, { useState } from "react";
 import {
   View,
   Text,
@@ -170,7 +170,7 @@ function AppContent() {
           </MapView>
         </View>
 
-        <View style={styles.wow}>
+        <View style={styles.overBoxes}>
          <View style={{flexDirection:"row" }}>
             <Text style={{padding:15, backgroundColor:"white" ,borderRadius: 20,}}>Bars </Text>
             <Text style={{padding:15 ,marginLeft: 70, backgroundColor:"white",borderRadius: 20,}}>Clubs</Text>
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 2, // Ensure the overlay is above the map but below the bottom sheet
   },
-  wow: {
+  overBoxes: {
     width: "100%",
     justifyContent: "center",
     backgroundColor: "transparent",
@@ -286,11 +286,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  image: {
-    width: "100%",
-    height: "50%",
-    resizeMode: "contain",
-  },
+
   markerName: {
     fontSize: 18,
     fontWeight: "bold",
