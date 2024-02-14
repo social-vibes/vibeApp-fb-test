@@ -7,12 +7,16 @@ import { signOut } from "firebase/auth"; // User Sign out
 
 
 export default function HomeScreen() {
-    const { userInfo, setUserInfo, signOutUser } = useAuth(); //-- for sign-out purposes;
+    const { userInfo, signOutUser, userDoc } = useAuth(); //-- for sign-out purposes;
 
     return (
         <SafeAreaView>
-            <Text style={{color: "red"}}>Home Screen</Text>
-            <Text style={{color: "red"}}>Currently Signed in {`: ${userInfo.email}`}</Text>
+            {userDoc &&
+            <>
+                <Text style={{color: "red"}}>Currently Signed in {`: ${userDoc.name}`}</Text>
+                <Text style={{color: "red"}}>Currently Signed in {`: ${userDoc.email}`}</Text>
+            </>
+            }
             <Pressable
                 onPress={() => {
                     signOut(auth)
