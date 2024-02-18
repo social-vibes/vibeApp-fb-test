@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, useAuth } from './providers/authProvider';
 import ChatScreen from './screens/AppScreens/ChatScreen/ChatScreen';
+import GroupChatScreen from './screens/AppScreens/ChatScreen/GroupChatScreen'
 
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,7 @@ function AppContent() {
           <>
             <Stack.Screen name="AppScreens" component={TabNav}/> 
             <Stack.Screen name="ChatScreen" component={ChatScreen}/> 
+            <Stack.Screen name="GroupChatScreen" component={GroupChatScreen}/>
           </>
         ) : (
           <>

@@ -1,3 +1,4 @@
+//ChatScreen.js
 import React, { useEffect, useCallback, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { db } from '../../../firebase/firebaseConfig';
@@ -42,6 +43,7 @@ const createChatDoc = async () => {
             chatId: friendshipDoc.data.chatId,
             users: friendshipDoc.data.members,
             messages: messages,
+            groupChat: false, // Default to not a group chat
           });
         } catch (error) {
           console.error('Error creating chat document:', error);
@@ -49,6 +51,7 @@ const createChatDoc = async () => {
       }
 };
 
+  
 
   const onSend = useCallback(
     async newMessages => {
